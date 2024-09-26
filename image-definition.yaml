@@ -7,7 +7,7 @@ series: noble
 class: preinstalled
 kernel: linux-image-generic
 gadget:
-  url: "https://github.com/xypron/risc-v-gadget.git"
+  url: "https://github.com/canonical/risc-v-gadget.git"
   type: "git"
   branch: "master"
 rootfs:
