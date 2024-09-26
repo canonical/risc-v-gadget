@@ -9,7 +9,7 @@ kernel: linux-image-generic
 gadget:
   url: "https://github.com/canonical/risc-v-gadget.git"
   type: "git"
-  branch: "master"
+  branch: "main"
 rootfs:
   archive: ubuntu
   sources-list-deb822: true
