@@ -1,6 +1,15 @@
 RISC-V gadget
 =============
 
+Install dependencies
+--------------------
+
+.. code-block:: bash
+
+    sudo apt-get install qemu-user-static
+    sudo snap install ubuntu-image
+
+
 Build image
 -----------
 
