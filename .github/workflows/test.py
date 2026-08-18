@@ -3,7 +3,9 @@
 """ Usage: python test.py <image> [debug] """
 
 import pexpect
+import shutil
 import sys
+from pathlib import Path
 
 def main():
     image = sys.argv[1]
@@ -12,14 +14,26 @@ def main():
     if debug:
         print("Enabling debug mode.")
 
+    print(f"Setting up EFI variables...")
+    vars_src = Path("/usr/share/qemu-efi-riscv64/RISCV_VIRT_VARS.fd")
+    vars_dst = Path("RISCV_VIRT_VARS.fd")
+    if vars_src.exists():
+        shutil.copy(vars_src, vars_dst)
+        print(f"Copied {vars_src} to {vars_dst}")
+    elif not vars_dst.exists():
+        print(f"Error: {vars_src} not found and {vars_dst} not present.", file=sys.stderr)
+        sys.exit(1)
+
     print(f"Testing image '{image}'. Starting qemu...")
-    p = pexpect.spawn(f'qemu-system-riscv64 \
-        -machine virt -nographic -m 2048 -smp 4 \
-        -bios /usr/lib/riscv64-linux-gnu/opensbi/generic/fw_jump.bin \
-        -kernel /usr/lib/u-boot/qemu-riscv64_smode/uboot.elf \
-        -device virtio-net-device,netdev=eth0 -netdev user,id=eth0 \
-        -device virtio-rng-pci \
-        -drive file={image},format=raw,if=virtio'
+    p = pexpect.spawn(
+        f'qemu-system-riscv64 '
+        f'-cpu rva23s64 '
+        f'-machine virt -nographic -m 2048 -smp 4 '
+        f'-drive if=pflash,format=raw,unit=0,file=/usr/share/qemu-efi-riscv64/RISCV_VIRT_CODE.fd,readonly=on '
+        f'-drive if=pflash,format=raw,unit=1,file=RISCV_VIRT_VARS.fd,readonly=off '
+        f'-device virtio-net-device,netdev=eth0 -netdev user,id=eth0 '
+        f'-device virtio-rng-pci '
+        f'-drive file={image},format=raw,if=virtio'
     )
     
     if debug:

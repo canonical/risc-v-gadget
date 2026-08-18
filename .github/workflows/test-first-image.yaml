@@ -3,25 +3,29 @@
 name: Build and test
 
 # We allow running workflows on main, and on the 'ci' special branch used to work
-# on ci/cd workflows.
+# on ci/cd workflows. Also allow on LTS branches.
 on:
   push:
     branches:
       - main
       - ci
+      - resolute
+      - noble
   pull_request:
     branches:
       - main
       - ci
+      - resolute
+      - noble
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
       - name: Install apt dependencies
-        run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y snapd qemu-user-static ubuntu-dev-tools
+        run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y snapd qemu-user-binfmt ubuntu-dev-tools
       - name: Refresh systemd-binfmt
         run: sudo systemctl restart systemd-binfmt
       - name: Install ubuntu-image
@@ -29,8 +33,8 @@ jobs:
       - name: Build image
         run: sudo ubuntu-image --workdir work --debug classic image-definition.yaml
       - name: Install test dependencies
-        run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y python3-pexpect opensbi qemu-system-riscv64 u-boot-qemu
+        run: sudo apt-get update && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y python3-pexpect opensbi qemu-system-riscv qemu-efi-riscv64 u-boot-qemu
       - name: Set image permissions
-        run: sudo chown $USER work/ubuntu-24.04-preinstalled-server-riscv64.img
+        run: sudo chown $USER work/ubuntu-26.04-preinstalled-server-riscv64.img
       - name: Test image
-        run: python .github/workflows/test.py work/ubuntu-24.04-preinstalled-server-riscv64.img
+        run: python .github/workflows/test.py work/ubuntu-26.04-preinstalled-server-riscv64.img
