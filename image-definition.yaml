@@ -3,13 +3,13 @@ name: ubuntu-server-riscv64-preinstalled
 display-name: Ubuntu Server RISC-V preinstalled
 revision: 1
 architecture: riscv64
-series: resolute
+series: stonking
 class: preinstalled
 kernel: linux-image-generic
 gadget:
   url: "file://."
   type: "git"
-  branch: "resolute"
+  branch: "main"
 rootfs:
   archive: ubuntu
   sources-list-deb822: true
@@ -23,7 +23,7 @@ rootfs:
   seed:
     urls:
       - "https://git.launchpad.net/~ubuntu-core-dev/ubuntu-seeds/+git/"
-    branch: resolute
+    branch: stonking
     names:
       - cloud-image
       - server
@@ -49,6 +49,6 @@ customization:
       fsck-order: 1
 artifacts:
   img:
-    - name: ubuntu-26.04-preinstalled-server-riscv64.img
+    - name: ubuntu-26.10-preinstalled-server-riscv64.img
   manifest:
-    name: ubuntu-26.04-preinstalled-server-riscv64.manifest
+    name: ubuntu-26.10-preinstalled-server-riscv64.manifest

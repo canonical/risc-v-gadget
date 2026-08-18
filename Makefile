@@ -1,5 +1,5 @@
 
-SERIES ?= resolute
+SERIES ?= stonking
 DESTDIR ?= install
 
 all:
